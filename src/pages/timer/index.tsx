@@ -441,7 +441,7 @@ const ToastmastersTimer: React.FC = () => {
 
     return `已用时长：${formatTimeInput(tableTopicsUsed)}; 
     剩余时长：${formatTimeInput(tableTopicsRemaining)};
-    剩余人数：${Math.floor(tableTopicsRemaining / 2)}`;
+    剩余人数：${Math.floor(tableTopicsRemaining / 2.5)}`;
   };
 
 // 修改删除函数

@@ -1,7 +1,6 @@
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { DndContext, PointerSensor, useSensor } from '@dnd-kit/core';
-import React from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import { Statistics } from '../interface/Statistics';
 import { TimerRecord } from '../interface/TimerRecord';
@@ -40,6 +39,9 @@ import {
 
 import { formatTimeInput, parseTimeInput } from '@/utils/timeFormat';
 
+import React, { useCallback, useRef } from 'react';
+import debounce from 'lodash/debounce';
+
 const { Title } = Typography;
 const { Option } = Select;
 
@@ -63,6 +65,46 @@ interface TimerTableProps {
   onStartTimerUpdates: (id: string, plannedDurationMax: number, isPaused: boolean, startTime: string) => void;
 }
 
+// 独立的输入框组件
+const EditableCell = React.memo(React.forwardRef<HTMLTextAreaElement, {
+  id: string;
+  value: string;
+  field: 'overtimeReason' | 'improvement';
+  onUpdate: (id: string, field: string, value: string) => void;
+}>(({ id, value: initialValue, field, onUpdate }, ref) => {
+  // 使用本地 state 管理输入值
+  const [value, setValue] = React.useState(initialValue);
+
+  // 创建一个防抖的更新函数
+  const debouncedUpdate = useRef(
+    debounce((value: string) => {
+      onUpdate(id, field, value);
+    }, 300),
+  ).current;
+
+  // 当外部 value 改变且不在输入状态时更新本地 state
+  React.useEffect(() => {
+    if (document.activeElement !== ref?.current) {
+      setValue(initialValue);
+    }
+  }, [initialValue]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setValue(newValue);
+    debouncedUpdate(newValue);
+  }, [debouncedUpdate]);
+
+  return (
+    <Input.TextArea
+      ref={ref}
+      value={value}
+      onChange={handleChange}
+      placeholder={field === 'overtimeReason' ? '请输入超时原因...' : '请输入改进建议...'}
+      autoSize={{ minRows: 1, maxRows: 3 }}
+    />
+  );
+}));
 
 export const TimerTable: React.FC<TimerTableProps> = ({
                                                         records,
@@ -75,6 +117,13 @@ export const TimerTable: React.FC<TimerTableProps> = ({
                                                         onUpdateStatus,
                                                         onStartTimerUpdates,
                                                       }) => {
+
+  // 添加本地状态来管理输入
+  const [editingText, setEditingText] = React.useState<{
+    id: string;
+    field: 'overtimeReason' | 'improvement';
+    value: string;
+  } | null>(null);
 
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
@@ -359,13 +408,16 @@ export const TimerTable: React.FC<TimerTableProps> = ({
       title: '超时原因',
       dataIndex: 'overtimeReason',
       width: 200,
-      shouldCellUpdate: (record, prevRecord) => record.overtimeReason !== prevRecord.overtimeReason,
+      shouldCellUpdate: (record, prevRecord) => {
+        return record.overtimeReason !== prevRecord.overtimeReason;
+      },
       render: (_: any, record: TimerRecord) => (
-        <Input.TextArea
-          defaultValue={record.overtimeReason}
-          onChange={(e) => onUpdateRecord(record.id, 'overtimeReason', e.target.value)}
-          placeholder="请输入超时原因..."
-          autoSize={{ minRows: 1, maxRows: 3 }}
+        <EditableCell
+          key={`overtime-${record.id}`}
+          id={record.id}
+          value={record.overtimeReason || ''}
+          field="overtimeReason"
+          onUpdate={onUpdateRecord}
         />
       ),
     },
@@ -373,11 +425,26 @@ export const TimerTable: React.FC<TimerTableProps> = ({
       title: '改进建议',
       dataIndex: 'improvement',
       width: 200,
-      shouldCellUpdate: (record, prevRecord) => false,
       render: (_: any, record: TimerRecord) => (
         <Input.TextArea
-          defaultValue={record.improvement}
-          onChange={(e) => onUpdateRecord(record.id, 'improvement', e.target.value)}
+          value={
+            editingText?.id === record.id && editingText?.field === 'improvement'
+              ? editingText.value
+              : record.improvement || ''
+          }
+          onChange={(e) => {
+            setEditingText({
+              id: record.id,
+              field: 'improvement',
+              value: e.target.value,
+            });
+          }}
+          onBlur={() => {
+            if (editingText?.id === record.id && editingText?.field === 'improvement') {
+              onUpdateRecord(record.id, 'improvement', editingText.value);
+              setEditingText(null);
+            }
+          }}
           placeholder="请输入改进建议..."
           autoSize={{ minRows: 1, maxRows: 3 }}
         />

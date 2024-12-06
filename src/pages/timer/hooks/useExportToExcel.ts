@@ -20,9 +20,9 @@ const useExportToExcel = (records, stats) => {
       '结束时间': record.endTime,
       '已用时间': record.elapsedTime || '',
       '用时情况': record.status,
+      '提示牌': timerStatusColorDesc[record.timerStatus] || '',
       '超时原因': record.overtimeReason || '',
       '改进建议': record.improvement || '',
-      '提示牌': timerStatusColorDesc[record.timerStatus] || '',
     }));
 
     // 准备统计数据
@@ -43,6 +43,7 @@ const useExportToExcel = (records, stats) => {
         '统计项': '不足环节数',
         '数值': stats.undertime.length,
       },
+
     ];
 
     // 超时详情
