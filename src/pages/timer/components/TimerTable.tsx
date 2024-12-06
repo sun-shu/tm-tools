@@ -43,6 +43,14 @@ import { formatTimeInput, parseTimeInput } from '@/utils/timeFormat';
 const { Title } = Typography;
 const { Option } = Select;
 
+interface InputCellProps {
+  value: string;
+  onChange: (value: string) => void;
+  field: keyof TimerRecord;
+  multiline?: boolean;
+  placeholder?: string;
+}
+
 interface TimerTableProps {
   records: TimerRecord[];
   onDragEnd: (result: any) => void;
@@ -354,7 +362,7 @@ export const TimerTable: React.FC<TimerTableProps> = ({
       shouldCellUpdate: (record, prevRecord) => record.overtimeReason !== prevRecord.overtimeReason,
       render: (_: any, record: TimerRecord) => (
         <Input.TextArea
-          value={record.overtimeReason}
+          defaultValue={record.overtimeReason}
           onChange={(e) => onUpdateRecord(record.id, 'overtimeReason', e.target.value)}
           placeholder="请输入超时原因..."
           autoSize={{ minRows: 1, maxRows: 3 }}
@@ -368,7 +376,7 @@ export const TimerTable: React.FC<TimerTableProps> = ({
       shouldCellUpdate: (record, prevRecord) => false,
       render: (_: any, record: TimerRecord) => (
         <Input.TextArea
-          value={record.improvement}
+          defaultValue={record.improvement}
           onChange={(e) => onUpdateRecord(record.id, 'improvement', e.target.value)}
           placeholder="请输入改进建议..."
           autoSize={{ minRows: 1, maxRows: 3 }}

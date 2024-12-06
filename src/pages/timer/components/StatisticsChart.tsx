@@ -5,12 +5,14 @@ import { TimerRecord } from '../interface/TimerRecord';
 
 interface StatisticsChartProps {
   records: TimerRecord[];
+  type: string;
+  title: string;
 }
 
-export const StatisticsChart: React.FC<StatisticsChartProps> = ({ records }) => {
-  const getTableTopicsChartData = () => {
+export const StatisticsChart: React.FC<StatisticsChartProps> = ({ records, type, title }) => {
+  const getChartData = () => {
     return records
-      .filter(record => record.section === 'tableTopics' && record.elapsedTime)
+      .filter(record => record.section === type && record.elapsedTime)
       .map(record => ({
         name: record.roleNickname || record.roleName,
         elapsedTime: record.elapsedTime,
@@ -20,7 +22,7 @@ export const StatisticsChart: React.FC<StatisticsChartProps> = ({ records }) => 
   };
 
   const config = {
-    data: getTableTopicsChartData(),
+    data: getChartData(),
     xField: 'name',
     yField: 'elapsedTime',
     label: {
@@ -40,7 +42,7 @@ export const StatisticsChart: React.FC<StatisticsChartProps> = ({ records }) => 
   };
 
   return (
-    <Card title="统计" style={{ marginTop: 16 }}>
+    <Card title={title} style={{ marginTop: 16 }}>
       <Column
         {...config}
       />

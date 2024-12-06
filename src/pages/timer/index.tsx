@@ -50,6 +50,7 @@ import { TimerTable } from './components/TimerTable';
 import { StatisticsChart } from '@/pages/timer/components/StatisticsChart';
 
 import { useExportToExcel } from './hooks/useExportToExcel';
+import TimerSummary from '@/pages/timer/components/TimerSummary';
 // 生成默认记录
 const generateDefaultRecord = (section: string, index: number = 0): TimerRecord => {
   const defaultDuration = DEFAULT_DURATIONS[section];
@@ -568,9 +569,16 @@ const ToastmastersTimer: React.FC = () => {
         />
       </Card>
 
+      <TimerSummary records={records} />
       {records.some(r => r.section === 'tableTopics' && r.elapsedTime) && (
-        <StatisticsChart records={records} />
+        <StatisticsChart records={records} type="tableTopics" title="测试1"/>
       )}
+
+      {records.some(r => r.section === 'prepared' && r.elapsedTime) && (
+        <StatisticsChart records={records} type={'prepared'} title="测试2"/>
+      )}
+
+
     </div>
   );
 };
