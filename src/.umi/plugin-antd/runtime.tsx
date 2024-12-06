@@ -9,7 +9,7 @@ import {
 import { ApplyPluginsType } from 'umi';
 import { getPluginManager } from '../core/plugin';
 import { AntdConfigContext, AntdConfigContextSetter } from './context';
-import merge from 'D:/Learn/tm-tools/node_modules/.pnpm/lodash@4.17.21/node_modules/lodash/merge'
+import merge from '/Users/a1234/Learn/tm-tools/node_modules/.pnpm/lodash@4.17.21/node_modules/lodash/merge'
 
 let cacheAntdConfig = null;
 

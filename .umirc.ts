@@ -12,8 +12,8 @@ export default defineConfig({
     '@umijs/plugins/dist/tailwindcss',
     '@umijs/plugins/dist/react-query',
   ],
-  publicPath: process.env.NODE_ENV === 'production' ? '/evaluation/' : '/',
-  base: process.env.NODE_ENV === 'production' ? '/evaluation/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+  base: process.env.NODE_ENV === 'production' ? './' : '/',
   antd: {
     configProvider: {},
     theme: {
@@ -43,6 +43,7 @@ export default defineConfig({
     },
     // { path: '/login', component: 'user/login/index', layout: false },
     { path: '/timer', component: 'timer/index' },
+    { path: '/Demo', component: 'Demo' },
 
     { path: '/*', component: '@/pages/404.tsx' },
   ],

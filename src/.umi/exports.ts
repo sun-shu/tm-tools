@@ -5,17 +5,17 @@
 export { defineApp } from './core/defineApp'
 export type { RuntimeConfig } from './core/defineApp'
 // plugins
-export { useAntdConfig, useAntdConfigSetter } from 'D:/Learn/tm-tools/src/.umi/plugin-antd';
-export { Provider, useModel } from 'D:/Learn/tm-tools/src/.umi/plugin-model';
-export { useRequest, UseRequestProvider, request, getRequestInstance } from 'D:/Learn/tm-tools/src/.umi/plugin-request';
+export { useAntdConfig, useAntdConfigSetter } from '/Users/a1234/Learn/tm-tools/src/.umi/plugin-antd';
+export { Provider, useModel } from '/Users/a1234/Learn/tm-tools/src/.umi/plugin-model';
+export { useRequest, UseRequestProvider, request, getRequestInstance } from '/Users/a1234/Learn/tm-tools/src/.umi/plugin-request';
 // plugins types.d.ts
-export * from 'D:/Learn/tm-tools/src/.umi/plugin-antd/types.d';
-export * from 'D:/Learn/tm-tools/src/.umi/plugin-request/types.d';
+export * from '/Users/a1234/Learn/tm-tools/src/.umi/plugin-antd/types.d';
+export * from '/Users/a1234/Learn/tm-tools/src/.umi/plugin-request/types.d';
 // @umijs/renderer-*
-export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from 'D:/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.1.0_react-dom@18.1.0_react@18.1.0__react@18.1.0/node_modules/@umijs/renderer-react';
-export type { History } from 'D:/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.1.0_react-dom@18.1.0_react@18.1.0__react@18.1.0/node_modules/@umijs/renderer-react'
+export { createBrowserHistory, createHashHistory, createMemoryHistory, Helmet, HelmetProvider, createSearchParams, generatePath, matchPath, matchRoutes, Navigate, NavLink, Outlet, resolvePath, useLocation, useMatch, useNavigate, useOutlet, useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams, useAppData, useClientLoaderData, useLoaderData, useRouteProps, useSelectedRoutes, useServerLoaderData, renderClient, __getRoot, Link, useRouteData, __useFetcher, withRouter } from '/Users/a1234/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.3.36_react-dom@18.3.1_react@18.3.1/node_modules/@umijs/renderer-react';
+export type { History, ClientLoader } from '/Users/a1234/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.3.36_react-dom@18.3.1_react@18.3.1/node_modules/@umijs/renderer-react'
 // umi/client/client/plugin
-export { ApplyPluginsType, PluginManager } from 'D:/Learn/tm-tools/node_modules/.pnpm/umi@4.1.0_@babel+core@7.23.7_@types+node@20.11.19_@types+react@18.2.46_eslint@8.56.0_prettier_56gcz6aymoxl44rn5htfpycm34/node_modules/umi/client/client/plugin.js';
+export { ApplyPluginsType, PluginManager } from '/Users/a1234/Learn/tm-tools/node_modules/.pnpm/umi@4.3.36_@babel+core@7.26.0_@types+react@18.2.46_eslint@8.56.0_prettier@2.0.0_react-dom@18._geoncx5udufe2wa2hsvkayu5ta/node_modules/umi/client/client/plugin.js';
 export { history, createHistory } from './core/history';
 export { terminal } from './core/terminal';
 // react ssr

@@ -4,14 +4,15 @@
 import React from 'react';
 
 export async function getRoutes() {
-  const routes = {"1":{"path":"/","redirect":"/timer","parentId":"@@/global-layout","id":"1"},"2":{"path":"/timer","parentId":"@@/global-layout","id":"2"},"3":{"path":"/*","parentId":"@@/global-layout","id":"3"},"@@/global-layout":{"id":"@@/global-layout","path":"/","isLayout":true}} as const;
+  const routes = {"1":{"path":"/","redirect":"/timer","parentId":"@@/global-layout","id":"1"},"2":{"path":"/timer","parentId":"@@/global-layout","id":"2"},"3":{"path":"/Demo","parentId":"@@/global-layout","id":"3"},"4":{"path":"/*","parentId":"@@/global-layout","id":"4"},"@@/global-layout":{"id":"@@/global-layout","path":"/","isLayout":true}} as const;
   return {
     routes,
     routeComponents: {
-'1': React.lazy(() => import( './EmptyRoute')),
+'1': React.lazy(() => import('./EmptyRoute')),
 '2': React.lazy(() => import(/* webpackChunkName: "p__timer__index" */'@/pages/timer/index.tsx')),
-'3': React.lazy(() => import(/* webpackChunkName: "p__404" */'@/pages/404.tsx')),
-'@@/global-layout': React.lazy(() => import(/* webpackChunkName: "layouts__index" */'D:/Learn/tm-tools/src/layouts/index.tsx')),
+'3': React.lazy(() => import(/* webpackChunkName: "p__Demo" */'@/pages/Demo.tsx')),
+'4': React.lazy(() => import(/* webpackChunkName: "p__404" */'@/pages/404.tsx')),
+'@@/global-layout': React.lazy(() => import(/* webpackChunkName: "layouts__index" */'/Users/a1234/Learn/tm-tools/src/layouts/index.tsx')),
 },
   };
 }

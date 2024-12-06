@@ -3,12 +3,12 @@
 // DO NOT CHANGE IT MANUALLY!
 import './core/polyfill';
 import 'antd/dist/reset.css';
-import { renderClient } from 'D:/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.1.0_react-dom@18.1.0_react@18.1.0__react@18.1.0/node_modules/@umijs/renderer-react';
+import { renderClient } from '/Users/a1234/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.3.36_react-dom@18.3.1_react@18.3.1/node_modules/@umijs/renderer-react';
 import { getRoutes } from './core/route';
 import { createPluginManager } from './core/plugin';
 import { createHistory } from './core/history';
 import { ApplyPluginsType } from 'umi';
-import 'D:/Learn/tm-tools/src/.umi/plugin-tailwindcss/tailwind.css';
+import '/Users/a1234/Learn/tm-tools/src/.umi/plugin-tailwindcss/tailwind.css';
 
 const publicPath = "/";
 const runtimePublicPath = false;
@@ -47,15 +47,18 @@ async function render() {
     type: ApplyPluginsType.compose,
     initialValue() {
       const context = {
+        useStream: true,
         routes,
         routeComponents,
         pluginManager,
+        mountElementId: 'root',
         rootElement: contextOpts.rootElement || document.getElementById('root'),
         publicPath,
         runtimePublicPath,
         history,
         historyType,
         basename,
+        __INTERNAL_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: {"pureApp":false,"pureHtml":false},
         callback: contextOpts.callback,
       };
       const modifiedContext = pluginManager.applyPlugins({
@@ -71,6 +74,8 @@ async function render() {
 
 render();
 
-window.g_umi = {
-  version: '4.1.0',
-};
+    if (typeof window !== 'undefined') {
+      window.g_umi = {
+        version: '4.3.36',
+      };
+    }

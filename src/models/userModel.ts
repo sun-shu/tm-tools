@@ -47,7 +47,7 @@ export default function userModel() {
       ...s,
       currentUser: {},
     }));
-    history.push('/login');
+    // history.push('/login');
   };
 
   return {

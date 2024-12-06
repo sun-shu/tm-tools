@@ -3,11 +3,12 @@
 // DO NOT CHANGE IT MANUALLY!
 import React, { useEffect, useState } from 'react';
 import { ApplyPluginsType } from 'umi';
-import { renderClient, RenderClientOpts } from 'D:/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.1.0_react-dom@18.1.0_react@18.1.0__react@18.1.0/node_modules/@umijs/renderer-react';
+import { renderClient, RenderClientOpts } from '/Users/a1234/Learn/tm-tools/node_modules/.pnpm/@umijs+renderer-react@4.3.36_react-dom@18.3.1_react@18.3.1/node_modules/@umijs/renderer-react';
 import { createHistory } from './core/history';
 import { createPluginManager } from './core/plugin';
 import { getRoutes } from './core/route';
 import type { Location } from 'history';
+
 
 import 'antd/dist/reset.css';
 const publicPath = '/';

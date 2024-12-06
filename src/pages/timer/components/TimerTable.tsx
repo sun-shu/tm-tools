@@ -39,19 +39,12 @@ import {
 
 import { formatTimeInput, parseTimeInput } from '@/utils/timeFormat';
 
-import React, { useCallback, useRef } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import debounce from 'lodash/debounce';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-interface InputCellProps {
-  value: string;
-  onChange: (value: string) => void;
-  field: keyof TimerRecord;
-  multiline?: boolean;
-  placeholder?: string;
-}
 
 interface TimerTableProps {
   records: TimerRecord[];
@@ -66,45 +59,31 @@ interface TimerTableProps {
 }
 
 // 独立的输入框组件
-const EditableCell = React.memo(React.forwardRef<HTMLTextAreaElement, {
-  id: string;
-  value: string;
-  field: 'overtimeReason' | 'improvement';
-  onUpdate: (id: string, field: string, value: string) => void;
-}>(({ id, value: initialValue, field, onUpdate }, ref) => {
-  // 使用本地 state 管理输入值
-  const [value, setValue] = React.useState(initialValue);
+const EditableCell = React.memo(({ record, field, onUpdate }) => {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(record[field]);
 
-  // 创建一个防抖的更新函数
-  const debouncedUpdate = useRef(
-    debounce((value: string) => {
-      onUpdate(id, field, value);
-    }, 300),
-  ).current;
-
-  // 当外部 value 改变且不在输入状态时更新本地 state
-  React.useEffect(() => {
-    if (document.activeElement !== ref?.current) {
-      setValue(initialValue);
-    }
-  }, [initialValue]);
-
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    setValue(newValue);
-    debouncedUpdate(newValue);
-  }, [debouncedUpdate]);
+  if (!editing) {
+    return (
+        <div onClick={() => setEditing(true)}>
+          {value || '点击编辑'}
+        </div>
+    );
+  }
 
   return (
-    <Input.TextArea
-      ref={ref}
-      value={value}
-      onChange={handleChange}
-      placeholder={field === 'overtimeReason' ? '请输入超时原因...' : '请输入改进建议...'}
-      autoSize={{ minRows: 1, maxRows: 3 }}
-    />
+      <Input
+          autoFocus
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          onBlur={() => {
+            setEditing(false);
+            onUpdate(record.id, field, value);
+          }}
+      />
   );
-}));
+});
+
 
 export const TimerTable: React.FC<TimerTableProps> = ({
                                                         records,
@@ -117,19 +96,13 @@ export const TimerTable: React.FC<TimerTableProps> = ({
                                                         onUpdateStatus,
                                                         onStartTimerUpdates,
                                                       }) => {
-
-  // 添加本地状态来管理输入
-  const [editingText, setEditingText] = React.useState<{
-    id: string;
-    field: 'overtimeReason' | 'improvement';
-    value: string;
-  } | null>(null);
-
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 8, // 增加激活距离
     },
   });
+
+  console.log('records:', records)
 
   const DraggableRow = ({ children, ...props }: any) => {
     const {
@@ -231,10 +204,15 @@ export const TimerTable: React.FC<TimerTableProps> = ({
       dataIndex: 'roleName',
       width: 150,
       render: (_: any, record: TimerRecord) => (
-        <Input
-          value={record.roleName}
-          onChange={(e) => onUpdateRecord(record.id, 'roleName', e.target.value)}
-        />
+          <EditableCell
+              key={`roleName-${record.id}`}
+              id={record.id}
+              record={record}
+              value={record.roleName || ''}
+              field="roleName"
+              onUpdate={onUpdateRecord}
+          />
+
       ),
     },
     {
@@ -242,10 +220,14 @@ export const TimerTable: React.FC<TimerTableProps> = ({
       dataIndex: 'roleNickname',
       width: 150,
       render: (_: any, record: TimerRecord) => (
-        <Input
-          value={record.roleNickname}
-          onChange={(e) => onUpdateRecord(record.id, 'roleNickname', e.target.value)}
-        />
+          <EditableCell
+              key={`roleNickname-${record.id}`}
+              id={record.id}
+              record={record}
+              value={record.roleNickname || ''}
+              field="roleNickname"
+              onUpdate={onUpdateRecord}
+          />
       ),
     },
     {
@@ -415,6 +397,7 @@ export const TimerTable: React.FC<TimerTableProps> = ({
         <EditableCell
           key={`overtime-${record.id}`}
           id={record.id}
+          record={record}
           value={record.overtimeReason || ''}
           field="overtimeReason"
           onUpdate={onUpdateRecord}
@@ -426,30 +409,17 @@ export const TimerTable: React.FC<TimerTableProps> = ({
       dataIndex: 'improvement',
       width: 200,
       render: (_: any, record: TimerRecord) => (
-        <Input.TextArea
-          value={
-            editingText?.id === record.id && editingText?.field === 'improvement'
-              ? editingText.value
-              : record.improvement || ''
-          }
-          onChange={(e) => {
-            setEditingText({
-              id: record.id,
-              field: 'improvement',
-              value: e.target.value,
-            });
-          }}
-          onBlur={() => {
-            if (editingText?.id === record.id && editingText?.field === 'improvement') {
-              onUpdateRecord(record.id, 'improvement', editingText.value);
-              setEditingText(null);
-            }
-          }}
-          placeholder="请输入改进建议..."
-          autoSize={{ minRows: 1, maxRows: 3 }}
-        />
+          <EditableCell
+              key={`improvement-${record.id}`}
+              id={record.id}
+              record={record}
+              value={record.improvement || ''}
+              field="improvement"
+              onUpdate={onUpdateRecord}
+              maxLength={500}
+          />
       ),
-    },
+    }
   ];
 
 

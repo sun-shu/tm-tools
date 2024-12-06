@@ -104,7 +104,7 @@ const ToastmastersTimer: React.FC = () => {
     overtime: [],
     undertime: [],
   });
-  const [tableTopicsTotal, setTableTopicsTotal] = useState<number>(0);
+  const [tableTopicsTotal, setTableTopicsTotal] = useState<number>(25);
   // 在组件顶部添加新的状态
   const [deletedRecords, setDeletedRecords] = useState<TimerRecord[]>([]);
 
@@ -120,13 +120,15 @@ const ToastmastersTimer: React.FC = () => {
 
   // 更新统计信息
   const updateStatistics = () => {
-    let plannedTotal = 0;
+    let plannedTotal = tableTopicsTotal;
     let actualTotal = 0;
     const overtime: Statistics['overtime'] = [];
     const undertime: Statistics['undertime'] = [];
 
     records.forEach(record => {
-      plannedTotal += (record.plannedDurationMin + record.plannedDurationMax) / 2;
+      if (record.section !== 'tableTopics') {
+        plannedTotal += record.plannedDurationMax;
+      };
 
 
       if (record.actualMinutes) {
@@ -571,11 +573,11 @@ const ToastmastersTimer: React.FC = () => {
 
       <TimerSummary records={records} />
       {records.some(r => r.section === 'tableTopics' && r.elapsedTime) && (
-        <StatisticsChart records={records} type="tableTopics" title="测试1"/>
+        <StatisticsChart records={records} type="tableTopics" title="即兴演讲"/>
       )}
 
       {records.some(r => r.section === 'prepared' && r.elapsedTime) && (
-        <StatisticsChart records={records} type={'prepared'} title="测试2"/>
+        <StatisticsChart records={records} type={'prepared'} title="备稿演讲"/>
       )}
 
 
