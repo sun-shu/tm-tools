@@ -30,6 +30,18 @@ const TimerSummary: React.FC<TimerSummaryProps> = ({ records }) => {
     }, 0);
   };
 
+
+  // 判断时间状态
+  const getTimeStatus = (actual: number, min: number, max: number) => {
+    if (actual < min) {
+      return { type: 'insufficient', color: 'blue', icon: <ArrowDownOutlined />, text: '不足' };
+    } else if (actual > max) {
+      return { type: 'overtime', color: 'red', icon: <ArrowUpOutlined />, text: '超时' };
+    }
+    return { type: 'normal', color: 'success', icon: <CheckOutlined />, text: '合理' };
+  };
+
+
   // 按环节汇总数据
   const calculateSectionSummaries = (): SectionSummary[] => {
     const summaries: { [key: string]: SectionSummary } = {};
@@ -60,7 +72,33 @@ const TimerSummary: React.FC<TimerSummaryProps> = ({ records }) => {
       summaries[record.section].records += 1;
     });
 
-    return Object.values(summaries).sort((a, b) => Math.abs(b.deviation) - Math.abs(a.deviation));
+    // 新的排序逻辑
+    return Object.values(summaries).sort((a, b) => {
+      // 获取两个记录的状态
+      const statusA = getTimeStatus(a.actualDuration, a.plannedDurationMin, a.plannedDurationMax);
+      const statusB = getTimeStatus(b.actualDuration, b.plannedDurationMin, b.plannedDurationMax);
+
+      // 定义状态优先级
+      const getPriority = (status: ReturnType<typeof getTimeStatus>) => {
+        switch (status.type) {
+          case 'overtime': return 0;    // 超时优先级最高
+          case 'insufficient': return 1; // 不足优先级最低
+          case 'normal': return 2;      // 正常其次
+          default: return 1;
+        }
+      };
+
+      const priorityA = getPriority(statusA);
+      const priorityB = getPriority(statusB);
+
+      // 首先按状态优先级排序
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      // 同一状态内按偏差绝对值大小排序
+      return Math.abs(b.deviation) - Math.abs(a.deviation);
+    });
   };
 
   const totalDeviation = calculateTotalDeviation();
@@ -74,16 +112,6 @@ const TimerSummary: React.FC<TimerSummaryProps> = ({ records }) => {
     const mins = Math.floor(absMinutes % 60);
     const secs = Math.round((absMinutes * 60) % 60);
     return `${sign}${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // 判断时间状态
-  const getTimeStatus = (actual: number, min: number, max: number) => {
-    if (actual < min) {
-      return { type: 'insufficient', color: 'blue', icon: <ArrowDownOutlined />, text: '不足' };
-    } else if (actual > max) {
-      return { type: 'overtime', color: 'red', icon: <ArrowUpOutlined />, text: '超时' };
-    }
-    return { type: 'normal', color: 'success', icon: <CheckOutlined />, text: '合理' };
   };
 
   // 渲染偏差标签和时间
